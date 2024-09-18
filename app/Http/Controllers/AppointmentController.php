@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\AppointmentRequestData;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 
@@ -14,18 +15,11 @@ class AppointmentController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'service_id' => 'required|exists:services,id',
-            'appointment_time' => 'required|date',
-        ]);
+        $validated = AppointmentRequestData::from($request->all());
 
         $appointment = new Appointment();
-        $appointment->user_id = $request->user_id;
-        $appointment->service_id = $request->service_id;
-        $appointment->appointment_date = $request->appointment_time;
-        $appointment->save();
-        return response()->json($appointment, 201);
+        $response = $appointment->schedule(collect($validated->all()));
+        return response()->json($response, 201);
     }
 
     public function show($id)
