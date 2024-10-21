@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AppointmentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,7 +39,7 @@ class Appointment extends Model
         $this->service_id = $data['service_id'];
         $this->appointment_date = $data['appointment_date'];
         $this->appointment_time = $data['appointment_time'];
-        $this->status = $data['status'];
+        $this->status = AppointmentStatus::PENDING_CONFIRMATION->value;
         $this->save();
         return 'Atendimento agendado com sucesso!';
     }

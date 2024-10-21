@@ -25,9 +25,6 @@ class AppointmentRequestData extends Data
 
         #[Required]
         public string $appointment_time,
-
-        #[Required]
-        public string $status
     ) {
     }
 }
