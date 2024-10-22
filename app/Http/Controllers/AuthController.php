@@ -18,7 +18,8 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return response()->json(['token' => $token]);
+        $user = User::query()->where('email',$request->email)->get();
+        return response()->json(['token' => $token, 'user' => $user]);
     }
 
     public function register(Request $request)
