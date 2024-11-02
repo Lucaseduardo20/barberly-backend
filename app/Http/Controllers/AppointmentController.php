@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Appointment::with('user', 'service')->get();
+        return $request->user()->appointments()->get();
     }
 
     public function store(Request $request)

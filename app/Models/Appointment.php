@@ -34,7 +34,7 @@ class Appointment extends Model
 
     public function schedule (Collection $data): string
     {
-        $this->employee_id = $data['employee_id'];
+        $this->user_id = $data['employee_id'];
         $this->customer_id = $data['customer_id'];
         $this->service_id = $data['service_id'];
         $this->appointment_date = $data['appointment_date'];

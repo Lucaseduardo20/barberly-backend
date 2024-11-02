@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('tel')->nullable();
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
-            $table->string('role'); // 'admin', 'employee', etc.
+            $table->string('role');
             $table->timestamps();
         });
     }
@@ -29,7 +29,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };
