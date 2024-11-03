@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use App\Data\AppointmentRequestData;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Data\AppointmentData;
+use Ramsey\Collection\Collection;
+use Spatie\LaravelData\DataCollection;
 
 class AppointmentController extends Controller
 {
     public function index(Request $request)
     {
-        return $request->user()->appointments()->get();
+        $appointments = $request->user()->appointments()->with('customer')->get();
+
+        return AppointmentData::collect(
+            $appointments->map(fn($appointment) => AppointmentData::fromAppointment($appointment))
+        );
     }
 
     public function store(Request $request)

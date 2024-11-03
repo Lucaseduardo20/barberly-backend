@@ -4860,16 +4860,16 @@
         },
         {
             "name": "spatie/laravel-data",
-            "version": "4.9.0",
+            "version": "4.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-data.git",
-                "reference": "1b7c105deddcb1331f245cccddd5b6f397213a86"
+                "reference": "df5b58baebae34475ca35338b4e9a131c9e2a8e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-data/zipball/1b7c105deddcb1331f245cccddd5b6f397213a86",
-                "reference": "1b7c105deddcb1331f245cccddd5b6f397213a86",
+                "url": "https://api.github.com/repos/spatie/laravel-data/zipball/df5b58baebae34475ca35338b4e9a131c9e2a8e0",
+                "reference": "df5b58baebae34475ca35338b4e9a131c9e2a8e0",
                 "shasum": ""
             },
             "require": {
@@ -4895,7 +4895,7 @@
                 "phpstan/extension-installer": "^1.1",
                 "phpunit/phpunit": "^10.0",
                 "spatie/invade": "^1.0",
-                "spatie/laravel-typescript-transformer": "^2.3",
+                "spatie/laravel-typescript-transformer": "^2.5",
                 "spatie/pest-plugin-snapshots": "^2.1",
                 "spatie/test-time": "^1.2"
             },
@@ -4932,7 +4932,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-data/issues",
-                "source": "https://github.com/spatie/laravel-data/tree/4.9.0"
+                "source": "https://github.com/spatie/laravel-data/tree/4.11.1"
             },
             "funding": [
                 {
@@ -4940,7 +4940,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-09-10T13:25:26+00:00"
+            "time": "2024-10-23T07:14:53+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
