@@ -14,7 +14,8 @@ class AppointmentData extends Data
         public string $appointment_date,
         public string $appointment_time,
         public string $status,
-        public ServiceData $service
+        public array $services,
+        public int $amount
     ) {}
 
     public static function fromAppointment(Appointment $appointment): self
@@ -25,7 +26,8 @@ class AppointmentData extends Data
             appointment_date: $appointment->appointment_date,
             appointment_time: $appointment->appointment_time,
             status: $appointment->status,
-            service: ServiceData::from($appointment->service)
+            services: ServiceData::fromData($appointment->services->toArray()),
+            amount: $appointment->amount
         );
     }
 }

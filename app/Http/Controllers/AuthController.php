@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
@@ -22,8 +23,9 @@ class AuthController extends Controller
         return response()->json(['token' => $token, 'user' => $user]);
     }
 
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
+        logger('User', ['blabla']);
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -33,12 +35,13 @@ class AuthController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->company_id = 9;
+        $user->company_id = 1;
         $user->role = 'admin';
         $user->tel = '11954065757';
         $user->password = Hash::make($request->password);
-
         $user->save();
+
+
 
         $token = JWTAuth::fromUser($user);
 
