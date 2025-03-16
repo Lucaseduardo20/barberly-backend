@@ -15,7 +15,7 @@ class AppointmentData extends Data
         public string $appointment_time,
         public string $status,
         public array $services,
-        public int $amount
+        public int $amount,
     ) {}
 
     public static function fromAppointment(Appointment $appointment): self

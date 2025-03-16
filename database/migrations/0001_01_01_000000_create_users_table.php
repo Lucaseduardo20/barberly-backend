@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('tel')->nullable();
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->string('role');
+            $table->float('commission');
+            $table->integer('percentage');
             $table->timestamps();
         });
     }

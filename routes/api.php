@@ -14,7 +14,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('appointments', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::get('appointments/{id}', [AppointmentController::class, 'show'])->name('appointments.show');
     Route::put('appointments/{id}', [AppointmentController::class, 'update'])->name('appointments.update');
-    Route::delete('appointments/{id}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
+    Route::post('appointments/cancel', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
+    Route::post('appointments/done', [AppointmentController::class, 'done'])->name('appointments.done');
 });
 
 Route::group(['prefix' => 'customer'], function () {

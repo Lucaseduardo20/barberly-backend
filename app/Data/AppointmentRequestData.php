@@ -31,7 +31,9 @@ class AppointmentRequestData extends Data
         public float $amount,
 
         #[Required]
-        public int $estimated_time
+        public int $estimated_time,
+
+        public ?string $payment_method
     ) {
     }
 }

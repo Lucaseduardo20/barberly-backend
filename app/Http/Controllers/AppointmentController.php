@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Data\AppointmentRequestData;
+use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
+use App\Services\AppointmentService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Data\AppointmentData;
 use Ramsey\Collection\Collection;
@@ -11,6 +14,11 @@ use Spatie\LaravelData\DataCollection;
 
 class AppointmentController extends Controller
 {
+
+    public function __construct(private readonly AppointmentService $service)
+    {
+    }
+
     public function index(Request $request)
     {
         $appointments = $request->user()->appointments()->with('customer')->get();
@@ -46,11 +54,26 @@ class AppointmentController extends Controller
         return response()->json($appointment);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request): JsonResponse
     {
-        $appointment = Appointment::findOrFail($id);
-        $appointment->delete();
+        $data = $request->all();
+
+        $this
+            ->service
+            ->cancel($data['id'], $data['reason']);
+
         return response()->json(null, 204);
+    }
+
+    public function done(Request $request)
+    {
+        $data = $request->all();
+
+        $this
+            ->service
+            ->done($data['id'], $data['payment_method']);
+
+        return response()->json(['message' => 'Agendamento concluído com sucesso!'], 200);
     }
 }
 

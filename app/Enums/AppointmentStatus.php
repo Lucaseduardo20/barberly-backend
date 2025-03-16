@@ -8,4 +8,6 @@ enum AppointmentStatus: string
 
     case PENDING_CONFIRMATION = 'pending';
     case CANCELED = 'canceled';
+
+    case DONE = 'done';
 }

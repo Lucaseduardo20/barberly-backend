@@ -26,11 +26,11 @@ class AuthController extends Controller
     public function register(Request $request): JsonResponse
     {
         logger('User', ['blabla']);
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+//        $request->validate([
+//            'name' => 'required|string|max:255',
+//            'email' => 'required|string|email|max:255|unique:users',
+//            'password' => 'required|string|min:8',
+//        ]);
 
         $user = new User();
         $user->name = $request->name;
@@ -39,6 +39,8 @@ class AuthController extends Controller
         $user->role = 'admin';
         $user->tel = '11954065757';
         $user->password = Hash::make($request->password);
+        $user->commission = 0;
+        $user->percentage = 0;
         $user->save();
 
 

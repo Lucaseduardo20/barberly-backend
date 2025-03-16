@@ -17,6 +17,8 @@ class CreateAppointmentsTable extends Migration
             $table->integer('estimated_time');
             $table->string('status')->default('pending');
             $table->float('amount');
+            $table->string('payment_method')->nullable()->default(null);
+            $table->string('reason')->nullable()->default(null);
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
