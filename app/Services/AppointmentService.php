@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
+use App\Models\User;
 
 class AppointmentService
 {
@@ -12,6 +13,7 @@ class AppointmentService
         $appointment = Appointment::find($id);
         $appointment->status = AppointmentStatus::DONE->value;
         $appointment->payment_method = $payment_method;
+        $this->pay_collaborator($appointment->user, $appointment->amount);
         $appointment->save();
     }
 
@@ -21,5 +23,11 @@ class AppointmentService
         $appointment->status = AppointmentStatus::CANCELED->value;
         $appointment->reason = $reason;
         $appointment->delete();
+    }
+
+    public function pay_collaborator(User $user, int $amount)
+    {
+        $commissionToAdd = $amount * ($user->percentage / 100);
+        $user->increment('commission', $commissionToAdd);
     }
 }
