@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AppointmentStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,6 +36,12 @@ class Appointment extends Model
     {
         return $this->belongsToMany(Service::class, 'appointment_service')
             ->withTimestamps();
+    }
+
+
+    public function fAppointmentTime(): Attribute
+    {
+        return Attribute::make(get: fn () => formatTime($this->appointment_time));
     }
 
     public function schedule(Collection $data): string

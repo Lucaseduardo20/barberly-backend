@@ -24,7 +24,7 @@ class AppointmentData extends Data
             id: $appointment->id,
             customer: CustomerData::from($appointment->customer),
             appointment_date: $appointment->appointment_date,
-            appointment_time: $appointment->appointment_time,
+            appointment_time: $appointment->f_appointment_time,
             status: $appointment->status,
             services: ServiceData::fromData($appointment->services->toArray()),
             amount: $appointment->amount

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -63,6 +64,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function fCommission(): Attribute
+    {
+        return Attribute::make(get: fn () => formatCommission($this->commission));
+    }
+
 
     public function getJWTIdentifier(): mixed
     {
