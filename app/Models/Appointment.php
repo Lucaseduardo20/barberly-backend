@@ -44,6 +44,18 @@ class Appointment extends Model
         return Attribute::make(get: fn () => formatTime($this->appointment_time));
     }
 
+    public function fAppointmentDate(): Attribute
+    {
+        return Attribute::make(get: fn () => formatDate($this->appointment_date));
+    }
+
+    public function fEstimatedTime(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => formatMinutesToHours($this->estimated_time)
+        );
+    }
+
     public function schedule(Collection $data): string
     {
         $this->user_id = $data['employee_id'];

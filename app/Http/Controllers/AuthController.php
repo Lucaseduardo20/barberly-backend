@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Data\UserData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -20,12 +21,11 @@ class AuthController extends Controller
         }
 
         $user = User::query()->where('email',$request->email)->get();
-        return response()->json(['token' => $token, 'user' => $user]);
+        return response()->json(['token' => $token, 'user' => UserData::fromUser($user[0])]);
     }
 
     public function register(Request $request): JsonResponse
     {
-        logger('User', ['blabla']);
 //        $request->validate([
 //            'name' => 'required|string|max:255',
 //            'email' => 'required|string|email|max:255|unique:users',
