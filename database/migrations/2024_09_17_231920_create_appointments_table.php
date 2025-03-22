@@ -20,6 +20,7 @@ class CreateAppointmentsTable extends Migration
             $table->string('payment_method')->nullable()->default(null);
             $table->string('reason')->nullable()->default(null);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

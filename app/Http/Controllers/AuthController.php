@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Data\UserData;
+use App\Enums\RoleEnum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -36,7 +37,7 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->company_id = 1;
-        $user->role = 'admin';
+        $user->role = 'barber';
         $user->tel = '11954065757';
         $user->password = Hash::make($request->password);
         $user->commission = 0;
