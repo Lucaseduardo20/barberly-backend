@@ -18,7 +18,8 @@ class AppointmentData extends Data
         public array $services,
         public int $amount,
         public string $estimated_time,
-        public ?string $assigned_to
+        public ?string $assigned_to,
+        public ?string $payment_method
     ) {}
 
     public static function fromAppointment(Appointment $appointment): self
@@ -32,7 +33,8 @@ class AppointmentData extends Data
             services: ServiceData::fromData($appointment->services->toArray()),
             amount: $appointment->amount,
             estimated_time: $appointment->f_estimated_time,
-            assigned_to: Auth::user()->is_admin ? $appointment->user->name : null
+            assigned_to: Auth::user()->is_admin ? $appointment->user->name : null,
+            payment_method: $appointment->payment_method
         );
     }
 }

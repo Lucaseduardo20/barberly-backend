@@ -27,7 +27,6 @@ class AppointmentService
 
     public function pay_collaborator(User $user, int $amount)
     {
-        $commissionToAdd = $amount * ($user->percentage / 100);
-        $user->increment('commission', $commissionToAdd);
+        $user->increment('commission', $amount * ($user->percentage / 100));
     }
 }

@@ -10,4 +10,9 @@ enum AppointmentStatus: string
     case CANCELED = 'canceled';
 
     case DONE = 'done';
+
+    public static function isDone(string $status): bool
+    {
+        return $status === self::DONE->value;
+    }
 }
