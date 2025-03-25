@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AppointmentStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -65,11 +66,25 @@ class Appointment extends Model
         $this->appointment_time = $data['appointment_time'];
         $this->status = AppointmentStatus::PENDING_CONFIRMATION->value;
         $this->amount = $data['amount'];
-        $this->estimated_time = $data['estimated_time'];
+
+        $servicesData = collect($data['services']);
+        $totalDuration = Service::whereIn('id', $servicesData->pluck('id'))->sum('duration');
+
+        $startTime = Carbon::parse($data['appointment_time']);
+        $endTime = $startTime->copy()->addMinutes((int) $totalDuration); // Note o uso de copy()
+
+        $this->end_time = $endTime->format('H:i');
+        $this->estimated_time = $totalDuration;
         $this->save();
 
-        if (isset($data['service_ids'])) {
-            $this->services()->sync($data['service_ids']);
+        if (isset($data['services'])) {
+            $syncData = $servicesData->mapWithKeys(function ($service) {
+                return [
+                    $service['id'] => ['duration' => $service['duration']]
+                ];
+            })->toArray();
+
+            $this->services()->sync($syncData);
         }
 
         return 'Atendimento agendado com sucesso!';

@@ -19,7 +19,7 @@ class AppointmentRequestData extends Data
         public int $employee_id,
 
         #[Required, ArrayType, Min(1)]
-        public array $service_ids,
+        public array $services,
 
         #[Required, Date]
         public string $appointment_date,
@@ -31,7 +31,7 @@ class AppointmentRequestData extends Data
         public float $amount,
 
         #[Required]
-        public int $estimated_time,
+        public int $duration,
 
         public ?string $payment_method
     ) {

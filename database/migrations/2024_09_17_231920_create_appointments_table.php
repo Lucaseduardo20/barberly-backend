@@ -17,7 +17,6 @@ class CreateAppointmentsTable extends Migration
             $table->integer('estimated_time');
             $table->enum('status', ['pending', 'scheduled', 'canceled', 'done'])->default('pending');
             $table->float('amount');
-            $table->time('start_time');
             $table->time('end_time');
             $table->string('payment_method')->nullable()->default(null);
             $table->string('reason')->nullable()->default(null);
