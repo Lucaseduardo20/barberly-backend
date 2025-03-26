@@ -30,7 +30,7 @@ class AvailableScheduleData extends Data
             date: $schedule->date,
             start_time: $schedule->start_time,
             end_time: $schedule->end_time,
-            periods: ['end' => $schedule->end_time, 'start' => $schedule->start_time]
+            periods: ['id' => $schedule->id, 'end' => $schedule->end_time, 'start' => $schedule->start_time]
         );
     }
 
@@ -40,7 +40,7 @@ class AvailableScheduleData extends Data
             date: $data['date'],
             start_time: $data['start_time'] ?? null,
             end_time: $data['end_time'] ?? null,
-            periods: $data['periods'] ?? ['end' => $data['end_time'], 'start' => $data['start_time']]
+            periods: $data['periods'] ?? ['id' => $data['id'], 'end' => $data['end_time'], 'start' => $data['start_time']]
         );
     }
 }

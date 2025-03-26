@@ -19,6 +19,7 @@ class AvailableScheduleService
             ->map(fn ($items, $date) => [
                 'date' => $date,
                 'periods' => $items->map(fn ($item) => [
+                    'id' => $item->id,
                     'start' => $item->start_time,
                     'end' => $item->end_time,
                 ])->values()
