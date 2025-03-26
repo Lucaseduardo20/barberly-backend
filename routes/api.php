@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AvailableScheduleController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
@@ -25,5 +26,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::group(['prefix' => 'user'], function () {
         Route::get('/preview', [UserController::class, 'get_preview'])->name('user.get_preview');
+        Route::post('/available-schedules', [AvailableScheduleController::class, 'store']);
+        Route::get('/available-schedules', [AvailableScheduleController::class, 'index']);
+        Route::delete('/available-schedules/{id}', [AvailableScheduleController::class, 'destroy']);
     });
 });

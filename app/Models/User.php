@@ -66,6 +66,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Appointment::class);
     }
 
+    public function availableSchedules()
+    {
+        return $this->hasMany(AvailableSchedule::class, 'employee_id');
+    }
+
     public function fCommission(): Attribute
     {
         return Attribute::make(get: fn () => formatCommission($this->commission));
