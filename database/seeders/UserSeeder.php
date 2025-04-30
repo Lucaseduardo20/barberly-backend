@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123123'),
             'tel' => '11954065757',
             'company_id' => Company::query()->first()->id,
-            'role' => RoleEnum::ADMIN,
+            'role' => 'admin',
             'commission' => '0',
             'percentage' => 50
         ]);
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123123'),
             'tel' => '11954876765',
             'company_id' => Company::query()->first()->id,
-            'role' => RoleEnum::BARBER,
+            'role' => 'berber',
             'commission' => '0',
             'percentage' => 50
         ]);
