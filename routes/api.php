@@ -12,6 +12,8 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::group(['prefix' => 'customer'], function () {
     Route::post('register', [CustomerController::class, 'store']);
+    Route::get('barbers', [CustomerController::class, 'get_barbers']);
+
 });
 Route::post('appointments', [AppointmentController::class, 'store'])->name('appointments.store');
 

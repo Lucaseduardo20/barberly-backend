@@ -28,12 +28,23 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'email' => 'barber@barber.com',
-            'name' => 'Barbeiro',
+            'email' => 'gabriel@barber.com',
+            'name' => 'Gabriel Giacoboni',
             'password' => Hash::make('123123'),
             'tel' => '11954876765',
             'company_id' => Company::query()->first()->id,
-            'role' => 'berber',
+            'role' => 'barber',
+            'commission' => '0',
+            'percentage' => 50
+        ]);
+
+        User::create([
+            'email' => 'erick@barber.com',
+            'name' => 'Erick Yan',
+            'password' => Hash::make('123123'),
+            'tel' => '11954876765',
+            'company_id' => Company::query()->first()->id,
+            'role' => 'barber',
             'commission' => '0',
             'percentage' => 50
         ]);
