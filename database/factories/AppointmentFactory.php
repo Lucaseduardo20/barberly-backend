@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Appointment;
 use App\Enums\AppointmentStatus;
+use App\Models\Company;
 use App\Models\Customer;
 use App\Models\Service;
 use App\Models\User;
@@ -25,7 +26,9 @@ class AppointmentFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Appointment $appointment) {
-            $service = Service::factory()->create();
+            $service = Service::factory()->create([
+                'company_id' => $appointment->user->company_id,
+            ]);
 
             $appointment->services()->attach($service->id, [
                 'duration' => $service->duration,
@@ -40,12 +43,13 @@ class AppointmentFactory extends Factory
      */
     public function definition(): array
     {
+        $company = Company::factory();
         $startTime = Carbon::now()->addHours(rand(1, 8))->startOfMinute();
         $estimatedTime = $this->faker->randomElement([20, 30, 40, 60]);
 
         return [
-            'customer_id' => Customer::factory(),
-            'user_id' => User::factory(),
+            'customer_id' => Customer::factory()->for($company),
+            'user_id' => User::factory()->for($company),
             'appointment_date' => Carbon::today()->addDays(rand(1, 30)),
             'appointment_time' => $startTime->format('H:i:s'),
             'estimated_time' => $estimatedTime,

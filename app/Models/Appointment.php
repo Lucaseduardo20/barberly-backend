@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 
 class Appointment extends Model
 {
@@ -60,27 +61,83 @@ class Appointment extends Model
 
     public function schedule(Collection $data): string
     {
-        $this->user_id = $data['employee_id'];
-        $this->customer_id = $data['customer_id'];
+        $employee = User::query()->findOrFail($data['employee_id']);
+        $customer = Customer::query()->findOrFail($data['customer_id']);
+
+        if ((int) $customer->company_id !== (int) $employee->company_id) {
+            throw ValidationException::withMessages([
+                'customer_id' => 'Cliente nao pertence a empresa do barbeiro selecionado.',
+            ]);
+        }
+
+        if ($employee->role !== 'barber') {
+            throw ValidationException::withMessages([
+                'employee_id' => 'Usuario selecionado nao e um barbeiro.',
+            ]);
+        }
+
+        $serviceIds = collect($data['services'])->pluck('id')->values();
+        $services = Service::query()
+            ->where('company_id', $employee->company_id)
+            ->whereIn('id', $serviceIds)
+            ->get();
+
+        if ($services->count() !== $serviceIds->unique()->count()) {
+            throw ValidationException::withMessages([
+                'services' => 'Um ou mais servicos nao pertencem a empresa selecionada.',
+            ]);
+        }
+
+        $this->user_id = $employee->id;
+        $this->customer_id = $customer->id;
         $this->appointment_date = $data['appointment_date'];
         $this->appointment_time = $data['appointment_time'];
         $this->status = AppointmentStatus::PENDING_CONFIRMATION->value;
-        $this->amount = $data['amount'];
+        $this->amount = $services->sum('price');
 
-        $servicesData = collect($data['services']);
-        $totalDuration = Service::whereIn('id', $servicesData->pluck('id'))->sum('duration');
+        $totalDuration = $services->sum('duration');
 
         $startTime = Carbon::parse($data['appointment_time']);
-        $endTime = $startTime->copy()->addMinutes((int) $totalDuration); // Note o uso de copy()
+        $endTime = $startTime->copy()->addMinutes((int) $totalDuration);
 
-        $this->end_time = $endTime->format('H:i');
+        $start = $startTime->format('H:i:s');
+        $end = $endTime->format('H:i:s');
+
+        $isAvailable = AvailableSchedule::query()
+            ->where('employee_id', $employee->id)
+            ->where('date', $data['appointment_date'])
+            ->where('start_time', '<=', $start)
+            ->where('end_time', '>=', $end)
+            ->exists();
+
+        if (!$isAvailable) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'Horario fora da disponibilidade do barbeiro.',
+            ]);
+        }
+
+        $hasConflict = self::query()
+            ->where('user_id', $employee->id)
+            ->where('appointment_date', $data['appointment_date'])
+            ->where('status', '!=', AppointmentStatus::CANCELED->value)
+            ->where('appointment_time', '<', $end)
+            ->where('end_time', '>', $start)
+            ->exists();
+
+        if ($hasConflict) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'Conflito de horario detectado.',
+            ]);
+        }
+
+        $this->end_time = $end;
         $this->estimated_time = $totalDuration;
         $this->save();
 
         if (isset($data['services'])) {
-            $syncData = $servicesData->mapWithKeys(function ($service) {
+            $syncData = $services->mapWithKeys(function (Service $service) {
                 return [
-                    $service['id'] => ['duration' => $service['duration']]
+                    $service->id => ['duration' => $service->duration]
                 ];
             })->toArray();
 

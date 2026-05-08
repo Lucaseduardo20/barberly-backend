@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Data\AppointmentRequestData;
-use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
+use App\Models\User;
 use App\Services\AppointmentService;
+use App\Data\AppointmentData;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Data\AppointmentData;
-use Ramsey\Collection\Collection;
-use Spatie\LaravelData\DataCollection;
+use Illuminate\Validation\Rule;
 
 class AppointmentController extends Controller
 {
@@ -21,7 +21,9 @@ class AppointmentController extends Controller
 
     public function index(Request $request)
     {
-        $appointments = $request->user()->appointments()->with('customer')->get();
+        $appointments = $this->appointmentsFor($request)
+            ->with(['customer', 'services', 'user'])
+            ->get();
 
         return AppointmentData::collect(
             $appointments->map(fn($appointment) => AppointmentData::fromAppointment($appointment))
@@ -37,19 +39,30 @@ class AppointmentController extends Controller
         return response()->json($response, 201);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        return Appointment::findOrFail($id);
+        return $this->appointmentsFor($request)
+            ->with(['customer', 'services', 'user'])
+            ->findOrFail($id);
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'service_id' => 'required|exists:services,id',
-            'appointment_time' => 'required|date',
+            'user_id' => ['sometimes', 'exists:users,id'],
+            'appointment_date' => ['sometimes', 'date'],
+            'appointment_time' => ['sometimes', 'date_format:H:i'],
+            'status' => ['sometimes', Rule::in(['pending', 'scheduled', 'canceled', 'done'])],
         ]);
-        $appointment = Appointment::findOrFail($id);
+        $appointment = $this->appointmentsFor($request)->findOrFail($id);
+
+        if (isset($validated['user_id'])) {
+            User::query()
+                ->where('company_id', $request->user()->company_id)
+                ->where('role', 'barber')
+                ->findOrFail($validated['user_id']);
+        }
+
         $appointment->update($validated);
         return response()->json($appointment);
     }
@@ -60,7 +73,7 @@ class AppointmentController extends Controller
 
         $this
             ->service
-            ->cancel($data['id'], $data['reason']);
+            ->cancel($request->user(), $data['id'], $data['reason']);
 
         return response()->json(null, 204);
     }
@@ -71,9 +84,17 @@ class AppointmentController extends Controller
 
         $this
             ->service
-            ->done($data['id'], $data['payment_method']);
+            ->done($request->user(), $data['id'], $data['payment_method']);
 
         return response()->json(['message' => 'Agendamento concluído com sucesso!'], 200);
     }
-}
 
+    private function appointmentsFor(Request $request): Builder
+    {
+        $user = $request->user();
+
+        return Appointment::query()
+            ->whereHas('user', fn (Builder $query) => $query->where('company_id', $user->company_id))
+            ->when(!$user->is_admin, fn (Builder $query) => $query->where('user_id', $user->id));
+    }
+}

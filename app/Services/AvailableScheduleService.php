@@ -35,8 +35,8 @@ class AvailableScheduleService
         $conflict = AvailableSchedule::where('employee_id', $user->id)
             ->where('date', $data->date)
             ->where(function ($query) use ($data) {
-                $query->whereBetween('start_time', [$data->start_time, $data->end_time])
-                    ->orWhereBetween('end_time', [$data->start_time, $data->end_time]);
+                $query->where('start_time', '<', $data->end_time)
+                    ->where('end_time', '>', $data->start_time);
             })
             ->exists();
 
@@ -69,4 +69,3 @@ class AvailableScheduleService
         return ['message' => 'Horário removido com sucesso.', 'status' => 200];
     }
 }
-

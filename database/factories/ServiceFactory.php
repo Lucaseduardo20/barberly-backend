@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Company;
 use App\Models\Service;
 
 /**
@@ -25,6 +26,7 @@ class ServiceFactory extends Factory
     public function definition(): array
     {
         return [
+            'company_id' => Company::factory(),
             'name' => $this->faker->word(),
             'price' => $this->faker->randomElement([30, 50, 90, 120]),
             'duration' => $this->faker->randomElement([30, 50, 90, 95])

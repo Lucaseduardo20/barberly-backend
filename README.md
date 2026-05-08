@@ -75,10 +75,34 @@ No ambiente local atual, o PHP precisa ter as extensoes `mbstring` e `pdo_sqlite
 - `GET /api/user/preview`
 - `GET|POST|DELETE /api/user/available-schedules`
 
+## Multiempresa inicial
+
+A API ja tem uma primeira camada de isolamento por empresa:
+
+- Rotas autenticadas usam a `company_id` do usuario logado.
+- Rotas publicas podem receber `company_id` no payload/query string ou o header `X-Company-Id`.
+- Enquanto o frontend publico ainda nao sabe resolver empresa por slug, dominio ou link unico, a API usa a primeira empresa cadastrada como fallback temporario.
+- Clientes e servicos pertencem a uma empresa.
+- Agendamentos publicos so aceitam cliente, barbeiro e servicos da mesma empresa.
+- `POST /api/register` pode criar uma nova empresa quando recebe `company_name`, ou anexar o usuario a uma empresa existente quando recebe `company_id`.
+
+Esse fallback existe apenas para manter compatibilidade com os frontends atuais. Antes de producao, o ideal e substituir isso por uma URL publica da barbearia, por exemplo `/barbearias/{slug}` ou subdominio.
+
+## Agenda
+
+O agendamento publico calcula preco e duracao pelos servicos cadastrados no backend. Os campos `amount` e `duration` podem continuar vindo do frontend por compatibilidade, mas nao sao fonte de verdade.
+
+Para criar um agendamento, o barbeiro precisa ter disponibilidade cadastrada em `available_schedules` no dia e intervalo solicitado. A API rejeita:
+
+- cliente, barbeiro ou servico de empresas diferentes;
+- usuario selecionado que nao seja barbeiro;
+- horario fora da disponibilidade;
+- conflito com outro agendamento ativo;
+- servico inexistente ou de outra empresa.
+
 ## Proximas frentes
 
-- Isolamento real por empresa.
 - Cadastro/onboarding de barbearia.
-- Validacao de disponibilidade e conflito de agenda.
-- Autorizacao por empresa e papel de usuario.
+- Substituir fallback de tenant por slug/subdominio publico.
+- Refatorar controllers para services/repositories.
 - Testes de fluxo de agendamento ponta a ponta.

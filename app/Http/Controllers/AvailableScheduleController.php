@@ -39,6 +39,8 @@ class AvailableScheduleController extends Controller
     public function destroy($id): JsonResponse
     {
         $result = $this->scheduleService->deleteSchedule($id);
-        return response()->json(['message' => $result['message']], $result['status']);
+        return response()->json([
+            'message' => $result['message'] ?? $result['error'],
+        ], $result['status']);
     }
 }
