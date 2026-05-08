@@ -36,7 +36,9 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'company_id' => Company::factory(),
             'tel' => $this->faker->phoneNumber(),
-            'role' => $this->faker->randomElement(['admin', 'employee']),
+            'role' => $this->faker->randomElement(['admin', 'barber', 'manager']),
+            'commission' => 0,
+            'percentage' => $this->faker->numberBetween(30, 60),
         ];
     }
 
