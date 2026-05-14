@@ -6,9 +6,16 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AvailableScheduleController;
+use App\Http\Controllers\PublicBookingController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
+
+Route::group(['prefix' => 'public'], function () {
+    Route::get('company', [PublicBookingController::class, 'company']);
+    Route::get('services', [PublicBookingController::class, 'services']);
+    Route::get('available-times', [PublicBookingController::class, 'availableTimes']);
+});
 
 Route::group(['prefix' => 'customer'], function () {
     Route::post('register', [CustomerController::class, 'store']);

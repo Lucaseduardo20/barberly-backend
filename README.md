@@ -62,6 +62,12 @@ php artisan test
 
 No ambiente local atual, o PHP precisa ter as extensoes `mbstring` e `pdo_sqlite` habilitadas para rodar a suite dessa forma.
 
+Se for rodar testes dentro do Docker, force o banco de testes no comando para nao usar as variaveis MySQL do `docker-compose.yml`:
+
+```bash
+docker-compose exec -T -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: bigods-app php artisan test
+```
+
 ## Rotas principais
 
 - `POST /api/login`
